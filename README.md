@@ -1,7 +1,7 @@
 # mpi_with_gpu
 Simple code to test integrating CUDA / OpenAcc with MPI
 
-### Compile 
+### Compile and Run
 
 ```
 ml load openmpi/gcc/64/4.1.2
