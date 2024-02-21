@@ -3,6 +3,8 @@
  *  DATE   : 02/21/24
  *  LICENSE: GPL-3
  *  PURPOSE: 
+ *      This is a file with helper functions used by both cpu
+ *       and gpu versions of this code
 **************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +12,9 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
+#include <cuda_runtime_api.h>
+#include <iostream>
+using namespace std;
 
 
 
@@ -100,4 +105,32 @@ void initialize_matrix(float *A, int * dim, float value){
     }
 
 }
+
+
+// This is C++ code - from stackoverflow : https://stackoverflow.com/q/14038589 
+/********************************************************
+    ARGS:
+        cudaError_t code
+        const char* file : 
+        int line :
+    DESCRIPTION:
+        Uses macro and inline function b/c it is important to preserve the
+        file and line number in the error printing.
+    RETURN:
+    DEBUG:
+    NOTES: 
+    FUTURE:
+*******************************************************/
+#define gpuErrChk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
+inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
+{
+   if (code != cudaSuccess) 
+   {
+      fprintf(stderr,"GPUassert: %s %s : %d\n", cudaGetErrorString(code), file, line);
+      if (abort) exit(code);
+   }
+}
+
+
+
 
