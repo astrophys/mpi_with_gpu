@@ -5,3 +5,7 @@
 *.cubin
 *.fatbin
 .*.swp
+src/obj
+
+# Ignore executables
+mpi_integrate

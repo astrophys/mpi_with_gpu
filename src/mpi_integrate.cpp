@@ -34,6 +34,8 @@
 #include <time.h>
 #include <mpi.h>
 #include <cuda_runtime_api.h>
+#include <iostream>
+using namespace std;
 
 
 
