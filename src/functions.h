@@ -60,4 +60,19 @@ void print_1D_array(float * array1D, int Nx, int Ny);
 *******************************************************/
 void initialize_matrix(float *A, int * dim, float value);
 
+
+/********************************************************
+    ARGS:
+        float * A : 1D projection of 2D matrix
+        int * dim : x and y dimensions
+    DESCRIPTION:
+        Initialize identity matrix
+    RETURN:
+    DEBUG:
+    NOTES: 
+        1. Use 'flattened' 2D array
+    FUTURE:
+*******************************************************/
+void identity_matrix(float *A, int * dim, float factor);
+
 #endif
