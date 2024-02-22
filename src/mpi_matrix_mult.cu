@@ -47,9 +47,8 @@ int main(int argc, char * argv[])
     /***********************************************************/
     /****************** Variable Declaration *******************/
     /***********************************************************/
-    // Verbose, option, size
-    //char option[30]; 
     //printf("%s\n", option);
+    bool verbose;
     char hostname[250];
     char errmsg[250];
     int i = 0;                  // Indice
@@ -62,19 +61,19 @@ int main(int argc, char * argv[])
     int recvidx = -1;
     hostname[249]='\0';
     // Only work with square matrices to make my life easier
-    int nx      = 10;
-    int ny      = 10;
-    int N       = nx * ny; 
+    int size;
+    //bool verbose = false;
+    char * option = parse_cl_options(argv, &size, &verbose);
+    int nx = size;
+    int ny = size;
+    int N = nx * ny;
     int dim[]   = {nx, ny};
     float * sendA = (float *)malloc(sizeof(float) * nx * ny); // send to task + 1
     float * recvA = (float *)malloc(sizeof(float) * nx * ny); // receive from task - 1
     float * resA = NULL; // result of mult sendA and recvA
-    bool verbose = true;
-    //bool verbose = false;
-    char * option = parse_cl_options(argv);
 
 
-    /* MPI Initializations */
+    /******************* MPI Initializations ******************/
     //MPI_Status status; 
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &taskID);
@@ -138,20 +137,31 @@ int main(int argc, char * argv[])
         // CPU
         if(strcmp("mpi_cpu", option) == 0){
             resA = cpu_matrix_multiply(sendA, recvA, dim, dim, dim);
+
+
         // CPU - openmp
         }else if(strcmp("mpi_openmp_cpu", option) == 0){
             sprintf(errmsg, "ERROR!!! %s is not yet implemented\n", option);
             exit_with_error(errmsg);
+
+
         // CPU - cache optimized
         }else if(strcmp("mpi_openmp_cpu_opt", option) == 0){
+            sprintf(errmsg, "ERROR!!! %s is not yet implemented\n", option);
+            exit_with_error(errmsg);
+
+
         // GPU
         }else if(strcmp("mpi_gpu", option) == 0){
             sprintf(errmsg, "ERROR!!! %s is not yet implemented\n", option);
             exit_with_error(errmsg);
+
+
         }else{
             sprintf(errmsg, "ERROR!!! Invalid option,%s, passed\n", option);
             exit_with_error(errmsg);
         }
+
 
         // GPU NV-link
 

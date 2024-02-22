@@ -4,4 +4,4 @@
     #) cache optimized
 #. Create nvlink enabled code
     #) 
-#. Add size option
+#. Add final validation step

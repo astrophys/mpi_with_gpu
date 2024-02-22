@@ -253,10 +253,12 @@ FUTURE:
 ***********************************/
 void print_help(int exitval){
     printf("USAGE:\n\n");
-    printf("mpiexec --np num mpi_matrix_mult --option option\n");
+    printf("mpiexec --np num mpi_matrix_mult --option option --size 10 --verbose true/false\n");
     printf("\tnum    = (int) number of MPI tasks\n");
     printf("\toption = (str) 'mpi_cpu', 'mpi_cache_opt', 'mpi_openmp_cpu' or\n");
     printf("\t         'mpi_gpu' or 'mpi_openmp_cpu_opt'\n");
+    printf("\tsize    = (int) size of square matrices\n");
+    printf("\tverbose = (str) either 'true' or 'false'\n");
     exit(exitval);
 }
 
@@ -271,7 +273,7 @@ DEBUG:
 FUTURE:
     1. Learn an argparse like lib
 ***********************************/
-char * parse_cl_options(char ** argv){
+char * parse_cl_options(char ** argv, int * size, bool * verbose){
     /*************************** Help Section ***************************/
     if(argv[1][1] == 'h' && argv[1][0] == '-'){
         print_help(0);
@@ -279,13 +281,35 @@ char * parse_cl_options(char ** argv){
     char * option = NULL;
 
     // There must be a better way in C++
+    // Options : 
     if(strcmp("--option", argv[1]) == 0){
-        printf("%s\n", argv[2]);
         option = argv[2];
+        printf("\toption = %s\n", option);
         fflush(stdout);
     }else{
         print_help(1);
     }
-    
+    // Size of matrices
+    if(strcmp("--size", argv[3]) == 0){
+        *size = (int)atoi(argv[4]);
+        printf("\tsize = %i\n", *size);
+        fflush(stdout);
+    }else{
+        print_help(1);
+    }
+    // Verbose
+    if(strcmp("--verbose", argv[5]) == 0){
+        if(strcmp(argv[6], "true") == 0){
+            *verbose = true;
+        }else if(strcmp(argv[6], "false") == 0){
+            *verbose = false;
+        }else{
+            print_help(1);
+        }
+        printf("\tverbose = %i\n", *verbose);
+        fflush(stdout);
+    }else{
+        print_help(1);
+    }
     return(option);
 }

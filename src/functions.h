@@ -6,6 +6,8 @@
 **************************************************************/
 #ifndef FUNCTIONS
 #define FUNCTIONS
+
+
 /********************************************************
     ARGS:
         message : char array
@@ -97,13 +99,16 @@ __device__ int d_map_idx(int i, int j, int Ny);
 /**********************************
 ARGS:
     char * argv[] : CL args to parse 
+    char * option : e.g. 'mpi_cpu', etc
+    int * size    : size of square matrices, e.g. size x size matrix
+    bool * verbose: should we pring verbose option or not?
 RETURN:
 DESCRIPTION:
     Parses Command line options. Prints 'help' if requested.
 DEBUG:
 FUTURE:
 ***********************************/
-char * parse_cl_options(char ** argv);
+char * parse_cl_options(char ** argv, int * size, bool * verbose);
 
 
 /**********************************
