@@ -3,19 +3,19 @@
 #
 #
 LIB = -L/cm/local/apps/cuda/libs/current/lib64 -L/cm/shared/apps/openmpi4/gcc/4.1.2/lib -lmpi
-CXXFLAGS = -Wall
+CXXFLAGS = -Wall -g
 PREFIX = src
 CC = mpic++
 NVCC = nvcc
 NVCCFLAGS = --compiler-options ${CXXFLAGS} -I${CPATH} -I${CUDA_INC_PATH}/include
 
-OBJ = $(OBJ_DIR)/mpi_communicate.o $(OBJ_DIR)/functions.o $(OBJ_DIR)/cpu_mult.o
+OBJ = $(OBJ_DIR)/mpi_matrix_mult.o $(OBJ_DIR)/functions.o $(OBJ_DIR)/cpu_mult.o
 OBJ_DIR = $(PREFIX)/obj
 #CU_OBJ = $(OBJ_DIR)/functions.o
 
-# E.g. of working compilation nvcc -I/cm/shared/apps/openmpi4/gcc/4.1.2/include -I${CUDA_INC_PATH}/include -L/cm/local/apps/cuda/libs/current/lib64 -L/cm/shared/apps/openmpi4/gcc/4.1.2/lib -lmpi -o mpi_communicate src/obj/mpi_communicate.o
+# E.g. of working compilation nvcc -I/cm/shared/apps/openmpi4/gcc/4.1.2/include -I${CUDA_INC_PATH}/include -L/cm/local/apps/cuda/libs/current/lib64 -L/cm/shared/apps/openmpi4/gcc/4.1.2/lib -lmpi -o mpi_matrix_mult src/obj/mpi_matrix_mult.o
 
-all: mpi_communicate
+all: mpi_matrix_mult
 
 # Compile straight C++ files
 #$(OBJ_DIR)/%.o : $(PREFIX)/%.cu
@@ -25,8 +25,8 @@ all: mpi_communicate
 $(OBJ_DIR)/%.o : $(PREFIX)/%.cu
 	$(NVCC) $(NVCCFLAGS) $(CPLUS_INCLUDE_PATH) -c $< -o $@
 
-mpi_communicate : $(OBJ)
-	$(NVCC) $(NVCCFLAGS) $(CPLUS_INCLUDE_PATH) -o mpi_communicate $(LIB) $(OBJ)
+mpi_matrix_mult : $(OBJ)
+	$(NVCC) $(NVCCFLAGS) $(CPLUS_INCLUDE_PATH) -o mpi_matrix_mult $(LIB) $(OBJ)
 
 clean :
-	rm $(OBJ) mpi_communicate
+	rm $(OBJ) mpi_matrix_mult

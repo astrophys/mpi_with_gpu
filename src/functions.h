@@ -94,4 +94,27 @@ int map_idx(int i, int j, int Ny);
 __device__ int d_map_idx(int i, int j, int Ny);
 
 
+/**********************************
+ARGS:
+    char * argv[] : CL args to parse 
+RETURN:
+DESCRIPTION:
+    Parses Command line options. Prints 'help' if requested.
+DEBUG:
+FUTURE:
+***********************************/
+char * parse_cl_options(char ** argv);
+
+
+/**********************************
+ARGS:
+    int exitval : exit value
+RETURN:
+DESCRIPTION:
+    Parses Command line options. Prints 'help' if requested.
+DEBUG:
+FUTURE:
+    1. Learn an argparse like lib
+***********************************/
+void print_help(int exitval);
 #endif

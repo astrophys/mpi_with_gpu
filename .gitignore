@@ -9,3 +9,4 @@ src/obj
 # Ignore executables
 mpi_integrate
 mpi_communicate
+mpi_matrix_mult

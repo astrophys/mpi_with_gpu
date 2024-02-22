@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
+#include <string.h>
+#include <mpi.h>
 #include <cuda_runtime_api.h>
 #include <iostream>
 //using namespace nvcuda; 
@@ -32,6 +34,7 @@ using namespace std;
 void exit_with_error(char * message){
     fprintf(stderr, "%s", message);
     fflush(stderr);
+    MPI_Finalize();
     exit(1);
 }
 
@@ -238,5 +241,51 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=t
 }
 
 
+/**********************************
+ARGS:
+    int exitval : exit value
+RETURN:
+DESCRIPTION:
+    Parses Command line options. Prints 'help' if requested.
+DEBUG:
+FUTURE:
+    1. Learn an argparse like lib
+***********************************/
+void print_help(int exitval){
+    printf("USAGE:\n\n");
+    printf("mpiexec --np num mpi_matrix_mult --option option\n");
+    printf("\tnum    = (int) number of MPI tasks\n");
+    printf("\toption = (str) 'mpi_cpu', 'mpi_cache_opt', 'mpi_openmp_cpu' or\n");
+    printf("\t         'mpi_gpu' or 'mpi_openmp_cpu_opt'\n");
+    exit(exitval);
+}
 
 
+/**********************************
+ARGS:
+    char * argv[] : CL args to parse 
+RETURN:
+DESCRIPTION:
+    Parses Command line options. Prints 'help' if requested.
+DEBUG:
+FUTURE:
+    1. Learn an argparse like lib
+***********************************/
+char * parse_cl_options(char ** argv){
+    /*************************** Help Section ***************************/
+    if(argv[1][1] == 'h' && argv[1][0] == '-'){
+        print_help(0);
+    }
+    char * option = NULL;
+
+    // There must be a better way in C++
+    if(strcmp("--option", argv[1]) == 0){
+        printf("%s\n", argv[2]);
+        option = argv[2];
+        fflush(stdout);
+    }else{
+        print_help(1);
+    }
+    
+    return(option);
+}

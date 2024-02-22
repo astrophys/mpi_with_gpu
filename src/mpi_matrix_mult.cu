@@ -35,6 +35,7 @@
 #include <mpi.h>
 #include "functions.h"
 #include "cpu_mult.h"
+#include "gpu_mult.h"
 #include <cuda_runtime_api.h>
 #include <iostream>
 using namespace std;
@@ -43,6 +44,14 @@ using namespace std;
 
 int main(int argc, char * argv[])
 {
+    /***********************************************************/
+    /****************** Variable Declaration *******************/
+    /***********************************************************/
+    // Verbose, option, size
+    //char option[30]; 
+    //printf("%s\n", option);
+    char hostname[250];
+    char errmsg[250];
     int i = 0;                  // Indice
     int taskID = -1;
     int ntasks = -1;
@@ -51,11 +60,22 @@ int main(int argc, char * argv[])
     int msgtag = 42;           // Message tag used, see : https://stackoverflow.com/a/31471570/4021436
     int destidx = -1;
     int recvidx = -1;
-    char hostname[250];
-    //MPI_Status status; 
     hostname[249]='\0';
+    // Only work with square matrices to make my life easier
+    int nx      = 10;
+    int ny      = 10;
+    int N       = nx * ny; 
+    int dim[]   = {nx, ny};
+    float * sendA = (float *)malloc(sizeof(float) * nx * ny); // send to task + 1
+    float * recvA = (float *)malloc(sizeof(float) * nx * ny); // receive from task - 1
+    float * resA = NULL; // result of mult sendA and recvA
+    bool verbose = true;
+    //bool verbose = false;
+    char * option = parse_cl_options(argv);
+
 
     /* MPI Initializations */
+    //MPI_Status status; 
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &taskID);
     MPI_Comm_size(MPI_COMM_WORLD, &ntasks);
@@ -65,21 +85,14 @@ int main(int argc, char * argv[])
     gethostname(hostname, 1023);
     printf("Hello World from Task %i on %s\n", taskID,hostname);
 
-    // Allocate 1GB of arrays
-    //int N       = 15000 * 15000;        // 15000**2 * 4 bytes / int ~ 1GB
-    // Only work with square matrices to make my life easier
-    int nx      = 10;
-    int ny      = 10;
-    int N       = nx * ny; 
-    float * sendA = (float *)malloc(sizeof(float) * nx * ny); // send to task + 1
-    float * recvA = (float *)malloc(sizeof(float) * nx * ny); // receive from task - 1
-    float * resA = NULL; // result of mult sendA and recvA
-    int dim[] = {nx, ny};
     
     initialize_matrix(recvA, dim, 0.0);
     identity_matrix(sendA, dim, (float)(taskID+2));
 
 
+    /***********************************************************/
+    /****************** Main Loop - use MPI ********************/
+    /***********************************************************/
     printf("Starting Transfer...\n");
     // Transfer 1GB - 1000 times
     for(i=0; i<1000; i++){
@@ -88,7 +101,7 @@ int main(int argc, char * argv[])
             printf("\ti = %i\n", i);
             fflush(stdout);
         }
-        if(i%100 == 0){
+        if(verbose == true && i%100 == 0){
             printf("\tTask %i : destidx = %i, recvidx = %i\n", taskID, destidx, recvidx);
             fflush(stdout);
         }
@@ -107,30 +120,43 @@ int main(int argc, char * argv[])
             recvidx = taskID - 1;
         }
 
-        sendcode = MPI_Isend(sendA, N, MPI_FLOAT, destidx, msgtag, MPI_COMM_WORLD, &reqs[0]);
-        recvcode = MPI_Irecv(recvA, N, MPI_FLOAT, recvidx, msgtag, MPI_COMM_WORLD, &reqs[1]);
-        /* if(taskID == 0){
-            errCode = MPI_Send(src0A, N, MPI_INT, 1, msgtag, MPI_COMM_WORLD);
-            if(errCode != MPI_SUCCESS){
-                fprintf(stderr, "ERROR!!! MPI_SUCCESS not achieved. See %i", errCode);
-            }
-        }
-        if(taskID == 1){
-            errCode = MPI_Recv(des1A, N, MPI_INT, 0, msgtag, MPI_COMM_WORLD, &status);
-            if(errCode != MPI_SUCCESS){
-                fprintf(stderr, "ERROR!!! MPI_SUCCESS not achieved. See %i", errCode);
-            }
-        }
-        */
-        MPI_Barrier(MPI_COMM_WORLD);    // Ensure every task completes
+        // Non-blocking, needed for round-robin
+        sendcode = MPI_Isend(sendA, N, MPI_FLOAT, destidx, msgtag, MPI_COMM_WORLD,
+                             &reqs[0]);
+        recvcode = MPI_Irecv(recvA, N, MPI_FLOAT, recvidx, msgtag, MPI_COMM_WORLD,
+                             &reqs[1]);
+
+        // Ensure every task completes
+        MPI_Barrier(MPI_COMM_WORLD);
+
         // Check for error
         if(sendcode != MPI_SUCCESS || recvcode != MPI_SUCCESS){
             fprintf(stderr, "ERROR!!! MPI_SUCCESS not achieved. See sendcode %i or recvcode %i", sendcode, recvcode);
         }
 
-        resA = cpu_matrix_multiply(sendA, recvA, dim, dim, dim);
+        /****************** Multiply Matrix *******************/
+        // CPU
+        if(strcmp("mpi_cpu", option) == 0){
+            resA = cpu_matrix_multiply(sendA, recvA, dim, dim, dim);
+        // CPU - openmp
+        }else if(strcmp("mpi_openmp_cpu", option) == 0){
+            sprintf(errmsg, "ERROR!!! %s is not yet implemented\n", option);
+            exit_with_error(errmsg);
+        // CPU - cache optimized
+        }else if(strcmp("mpi_openmp_cpu_opt", option) == 0){
+        // GPU
+        }else if(strcmp("mpi_gpu", option) == 0){
+            sprintf(errmsg, "ERROR!!! %s is not yet implemented\n", option);
+            exit_with_error(errmsg);
+        }else{
+            sprintf(errmsg, "ERROR!!! Invalid option,%s, passed\n", option);
+            exit_with_error(errmsg);
+        }
+
+        // GPU NV-link
+
         // Visual Test that my code is assigning arrays and sending them correctly
-        if(taskID == 1 && i%100 == 0){
+        if(verbose == true && taskID == 1 && i%100 == 0){
             printf("task 1 : send array\n");
             print_1D_array(sendA, nx, ny);
             printf("task 1 : recv array\n");
