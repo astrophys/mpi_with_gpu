@@ -34,6 +34,7 @@
 #include <time.h>
 #include <mpi.h>
 #include "functions.h"
+#include "cpu_mult.h"
 #include <cuda_runtime_api.h>
 #include <iostream>
 using namespace std;
@@ -72,11 +73,11 @@ int main(int argc, char * argv[])
     int N       = nx * ny; 
     float * sendA = (float *)malloc(sizeof(float) * nx * ny); // send to task + 1
     float * recvA = (float *)malloc(sizeof(float) * nx * ny); // receive from task - 1
-    float * resA = (float *)malloc(sizeof(float) * nx * ny);  // result of mult sendA and recvA
+    float * resA = NULL; // result of mult sendA and recvA
     int dim[] = {nx, ny};
     
     initialize_matrix(recvA, dim, 0.0);
-    identity_matrix(sendA, dim, (float)(taskID+1));
+    identity_matrix(sendA, dim, (float)(taskID+2));
 
 
     printf("Starting Transfer...\n");
@@ -122,15 +123,20 @@ int main(int argc, char * argv[])
         }
         */
         MPI_Barrier(MPI_COMM_WORLD);    // Ensure every task completes
+        // Check for error
         if(sendcode != MPI_SUCCESS || recvcode != MPI_SUCCESS){
             fprintf(stderr, "ERROR!!! MPI_SUCCESS not achieved. See sendcode %i or recvcode %i", sendcode, recvcode);
         }
+
+        resA = cpu_matrix_multiply(sendA, recvA, dim, dim, dim);
         // Visual Test that my code is assigning arrays and sending them correctly
         if(taskID == 1 && i%100 == 0){
             printf("task 1 : send array\n");
             print_1D_array(sendA, nx, ny);
             printf("task 1 : recv array\n");
             print_1D_array(recvA, nx, ny);
+            printf("task 1 : result array\n");
+            print_1D_array(resA, nx, ny);
         }
     }
 

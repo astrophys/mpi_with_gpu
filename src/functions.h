@@ -75,4 +75,23 @@ void initialize_matrix(float *A, int * dim, float value);
 *******************************************************/
 void identity_matrix(float *A, int * dim, float factor);
 
+
+/**********************************
+ARGS:
+RETURN:
+DESCRIPTION:
+    Map 2D indices to 1D index
+DEBUG:
+    1. read_numpy_matrix() uses this function extensively.
+       Directly compared output from read_numpy_matrix() with input
+       and was IDENTICAL. This could not work if map_idx() didn't 
+       function correctly.
+FUTURE:
+    1. Add error checking if not too expensive
+***********************************/
+int map_idx(int i, int j, int Ny);
+// Visible to device
+__device__ int d_map_idx(int i, int j, int Ny);
+
+
 #endif

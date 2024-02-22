@@ -9,7 +9,7 @@ CC = mpic++
 NVCC = nvcc
 NVCCFLAGS = --compiler-options ${CXXFLAGS} -I${CPATH} -I${CUDA_INC_PATH}/include
 
-OBJ = $(OBJ_DIR)/mpi_communicate.o $(OBJ_DIR)/functions.o
+OBJ = $(OBJ_DIR)/mpi_communicate.o $(OBJ_DIR)/functions.o $(OBJ_DIR)/cpu_mult.o
 OBJ_DIR = $(PREFIX)/obj
 #CU_OBJ = $(OBJ_DIR)/functions.o
 

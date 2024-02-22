@@ -11,6 +11,7 @@
 #include <math.h>
 #include <time.h>
 #include <mpi.h>
+#include "functions.h"
 #include <cuda_runtime_api.h>
 
 
