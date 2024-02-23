@@ -16,6 +16,7 @@
 #include <mpi.h>
 #include <cuda_runtime_api.h>
 #include <iostream>
+#include "functions.h"
 //using namespace nvcuda; 
 using namespace std; 
 
@@ -215,30 +216,6 @@ __global__ void some_func(half * A){
 }*/
 
 
-
-// This is C++ code - from stackoverflow : https://stackoverflow.com/q/14038589 
-/********************************************************
-    ARGS:
-        cudaError_t code
-        const char* file : 
-        int line :
-    DESCRIPTION:
-        Uses macro and inline function b/c it is important to preserve the
-        file and line number in the error printing.
-    RETURN:
-    DEBUG:
-    NOTES: 
-    FUTURE:
-*******************************************************/
-#define gpuErrChk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
-inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
-{
-   if (code != cudaSuccess) 
-   {
-      fprintf(stderr,"GPUassert: %s %s : %d\n", cudaGetErrorString(code), file, line);
-      if (abort) exit(code);
-   }
-}
 
 
 /**********************************

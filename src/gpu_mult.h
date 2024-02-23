@@ -20,6 +20,6 @@
         2. Error Check - not possible on device code
     FUTURE:
 *******************************************************/
-__global__ void matrix_multiply(float * A, float * B, int * dimA, int * dimB,
+__global__ void gpu_matrix_multiply(float * A, float * B, int * dimA, int * dimB,
                                 float * AB, int * dimAB);
 #endif

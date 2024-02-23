@@ -67,10 +67,31 @@ int main(int argc, char * argv[])
     int nx = size;
     int ny = size;
     int N = nx * ny;
-    int dim[]   = {nx, ny};
-    float * sendA = (float *)malloc(sizeof(float) * nx * ny); // send to task + 1
-    float * recvA = (float *)malloc(sizeof(float) * nx * ny); // receive from task - 1
+    int * dim = NULL; //[]   = {nx, ny};
+    float * sendA = NULL;
+    float * recvA = NULL;
     float * resA = NULL; // result of mult sendA and recvA
+
+
+
+    /*************** Handle memory allocation *****************/
+    // CPU only memory allocation
+    if(strcmp("mpi_cpu", option) == 0 || strcmp("mpi_openmp_cpu", option) == 0 || 
+       strcmp("mpi_openmp_cpu_opt", option) == 0){
+        dim = (int *)malloc(sizeof(int) * 2);
+        sendA = (float *)malloc(sizeof(float) * nx * ny); // send to task + 1
+        recvA = (float *)malloc(sizeof(float) * nx * ny); // receive from task - 1
+        resA = NULL; // result of mult sendA and recvA
+
+    // GPU
+    }else if(strcmp("mpi_gpu", option) == 0){
+        gpuErrChk(cudaMallocManaged(&dim, 2 * sizeof(float)));
+        dim[0] = nx;
+        dim[1] = ny;
+        gpuErrChk(cudaMallocManaged(&sendA, dim[0] * dim[1] * sizeof(float)));
+        gpuErrChk(cudaMallocManaged(&recvA, dim[0] * dim[1] * sizeof(float)));
+        gpuErrChk(cudaMallocManaged(&resA, dim[0] * dim[1] * sizeof(float)));
+    }
 
 
     /******************* MPI Initializations ******************/
@@ -84,9 +105,9 @@ int main(int argc, char * argv[])
     gethostname(hostname, 1023);
     printf("Hello World from Task %i on %s\n", taskID,hostname);
 
-    
     initialize_matrix(recvA, dim, 0.0);
     identity_matrix(sendA, dim, (float)(taskID+2));
+
 
 
     /***********************************************************/
@@ -153,8 +174,11 @@ int main(int argc, char * argv[])
 
         // GPU
         }else if(strcmp("mpi_gpu", option) == 0){
-            sprintf(errmsg, "ERROR!!! %s is not yet implemented\n", option);
-            exit_with_error(errmsg);
+            //sprintf(errmsg, "ERROR!!! %s is not yet implemented\n", option);
+            //xit_with_error(errmsg);
+            gpu_matrix_multiply<<<1024,32>>>(sendA, recvA, dim, dim, resA, dim);
+            gpuErrChk(cudaPeekAtLastError());
+            gpuErrChk(cudaDeviceSynchronize());
 
 
         }else{

@@ -9,7 +9,7 @@ CC = mpic++
 NVCC = nvcc
 NVCCFLAGS = --compiler-options ${CXXFLAGS} -I${CPATH} -I${CUDA_INC_PATH}/include
 
-OBJ = $(OBJ_DIR)/mpi_matrix_mult.o $(OBJ_DIR)/functions.o $(OBJ_DIR)/cpu_mult.o
+OBJ = $(OBJ_DIR)/mpi_matrix_mult.o $(OBJ_DIR)/functions.o $(OBJ_DIR)/cpu_mult.o $(OBJ_DIR)/gpu_mult.o
 OBJ_DIR = $(PREFIX)/obj
 #CU_OBJ = $(OBJ_DIR)/functions.o
 
@@ -22,8 +22,9 @@ all: mpi_matrix_mult
 #	$(CC) $(CXXFLAGS) $(CPLUS_INCLUDE_PATH) -c $< -o $@
 
 # Compile straight CUDA files
+# -dc avoids error : ptxas fatal   : Unresolved extern function '_Z9d_map_idxiii'
 $(OBJ_DIR)/%.o : $(PREFIX)/%.cu
-	$(NVCC) $(NVCCFLAGS) $(CPLUS_INCLUDE_PATH) -c $< -o $@
+	$(NVCC) $(NVCCFLAGS) $(CPLUS_INCLUDE_PATH) -dc $< -o $@
 
 mpi_matrix_mult : $(OBJ)
 	$(NVCC) $(NVCCFLAGS) $(CPLUS_INCLUDE_PATH) -o mpi_matrix_mult $(LIB) $(OBJ)

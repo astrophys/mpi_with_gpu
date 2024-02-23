@@ -93,8 +93,7 @@ FUTURE:
 ***********************************/
 int map_idx(int i, int j, int Ny);
 // Visible to device
-__device__ int d_map_idx(int i, int j, int Ny);
-
+extern __device__ int d_map_idx(int i, int j, int Ny);
 
 /**********************************
 ARGS:
@@ -122,4 +121,32 @@ FUTURE:
     1. Learn an argparse like lib
 ***********************************/
 void print_help(int exitval);
+
+
+// This is C++ code - from stackoverflow :
+/********************************************************
+    ARGS:
+        cudaError_t code
+        const char* file : 
+        int line :
+    DESCRIPTION:
+        Uses macro and inline function b/c it is important to preserve the
+        file and line number in the error printing.
+    RETURN:
+    DEBUG:
+    NOTES: 
+        1. https://stackoverflow.com/q/14038589 
+        2. https://stackoverflow.com/a/40766760 # force inline funcs into every file
+    FUTURE:
+*******************************************************/
+#define gpuErrChk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
+inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
+{
+   if (code != cudaSuccess) 
+   {
+      fprintf(stderr,"GPUassert: %s %s : %d\n", cudaGetErrorString(code), file, line);
+      if (abort) exit(code);
+   }
+}
+
 #endif

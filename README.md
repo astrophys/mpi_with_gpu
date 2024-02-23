@@ -14,9 +14,17 @@ ml load openmpi/gcc/64/4.1.2
 ml load cuda11.8/toolkit/11.8.0
 make
 salloc --cpus-per-task=2 --nodes=2
-time mpiexec -np 2 mpi_matrix_mult
+time mpiexec -np 2 mpi_matrix_mult --option mpi_cpu --size 15 --verbose true
 ```
 
+Testing mpi + gpu computation
+```
+ml load openmpi/gcc/64/4.1.2
+ml load cuda11.8/toolkit/11.8.0
+make
+salloc --partition=dgxq --cpus-per-task=2 --gres=gpu --nodes=2
+time mpiexec -np 2 mpi_matrix_mult --option mpi_cpu --size 15 --verbose true
+```
 ### 
 
 
