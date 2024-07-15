@@ -2,7 +2,11 @@
 #   ml load openmpi/gcc/64/4.1.2
 #
 #
-LIB = -L/cm/local/apps/cuda/libs/current/lib64 -L/cm/shared/apps/openmpi4/gcc/4.1.2/lib -lmpi
+
+# changed 7/9/2024
+LIB = -L/cm/local/apps/cuda/libs/current/lib64 -L/cm/shared/apps/openmpi4/gcc/4.1.5/lib -lmpi
+
+
 CXXFLAGS = -Wall -g
 PREFIX = src
 CC = mpic++

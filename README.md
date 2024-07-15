@@ -32,3 +32,5 @@ time mpiexec -np 2 mpi_matrix_mult --option mpi_cpu --size 15 --verbose true
 1. [Multi-GPU programming for earth scientists](https://www2.cisl.ucar.edu/sites/default/files/2022-07/Multi%20Node%20Multi%20GPU%20Programming.pdf)
 
 2. [LLNL's amazing MPI Documentation](https://hpc-tutorials.llnl.gov/mpi)
+
+3. [SLURM MPI Guide](https://slurm.schedmd.com/mpi_guide.html)
