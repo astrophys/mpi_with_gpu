@@ -11,3 +11,5 @@ src/mpi/obj/
 mpi_integrate
 mpi_communicate
 mpi_matrix_mult
+src/nccl/obj/
+nccl_matrix_mult
