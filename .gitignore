@@ -6,6 +6,7 @@
 *.fatbin
 .*.swp
 src/obj
+src/mpi/obj/
 # Ignore executables
 mpi_integrate
 mpi_communicate
