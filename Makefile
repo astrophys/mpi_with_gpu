@@ -46,4 +46,4 @@ nccl_matrix_mult : $(OBJ_NCCL)
 	$(NVCC) $(NVCCFLAGS) $(CPLUS_INCLUDE_PATH) -o nccl_matrix_mult $(LIB_NCCL) $(OBJ_NCCL)
 
 clean :
-	rm $(OBJ_MPI) mpi_matrix_mult
+	rm $(OBJ_MPI) mpi_matrix_mult nccl_matrix_mult 
