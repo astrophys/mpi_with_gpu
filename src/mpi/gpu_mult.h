@@ -21,5 +21,5 @@
     FUTURE:
 *******************************************************/
 __global__ void gpu_matrix_multiply(float * A, float * B, int * dimA, int * dimB,
-                                float * AB, int * dimAB);
+                                float * AB, int * dimAB, bool verbose);
 #endif

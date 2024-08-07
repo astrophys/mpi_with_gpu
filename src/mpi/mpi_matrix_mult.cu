@@ -117,7 +117,7 @@ int main(int argc, char * argv[])
     // Transfer 1GB - 1000 times
     for(i=0; i<1000; i++){
         // Print progress
-        if(taskID == 0 && i%10 == 0){
+        if(taskID == 0 && i%100 == 0){
             printf("\ti = %i\n", i);
             fflush(stdout);
         }
@@ -176,7 +176,7 @@ int main(int argc, char * argv[])
         }else if(strcmp("mpi_gpu", option) == 0){
             //sprintf(errmsg, "ERROR!!! %s is not yet implemented\n", option);
             //xit_with_error(errmsg);
-            gpu_matrix_multiply<<<1024,32>>>(sendA, recvA, dim, dim, resA, dim);
+            gpu_matrix_multiply<<<1024,32>>>(sendA, recvA, dim, dim, resA, dim, false);
             gpuErrChk(cudaPeekAtLastError());
             gpuErrChk(cudaDeviceSynchronize());
 

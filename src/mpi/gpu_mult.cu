@@ -36,7 +36,7 @@
     FUTURE:
 *******************************************************/
 __global__ void gpu_matrix_multiply(float * A, float * B, int * dimA, int * dimB,
-                                float * AB, int * dimAB)
+                                float * AB, int * dimAB, bool verbose)
 {
     int j = 0;          // Iterate over elements, do dot product
     int startIdx = blockIdx.x * blockDim.x + threadIdx.x; // Index of current thread in block
@@ -45,7 +45,7 @@ __global__ void gpu_matrix_multiply(float * A, float * B, int * dimA, int * dimB
     int bj = 0;         // Index iterating over columns in B
     float sum = 0;
     //printf("%i %i : [%i %i] %i %i\n", startIdx, stride, threadIdx.x, blockIdx.x, blockDim.x, gridDim.x);
-    if(blockIdx.x == 0 && threadIdx.x ==0){
+    if(blockIdx.x == 0 && threadIdx.x ==0 && verbose == true){
         printf("****************************\n\tblockDim.x = %i\n\tgridDim.x = %i\n",
                blockDim.x, gridDim.x);
     }
