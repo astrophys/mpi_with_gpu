@@ -30,7 +30,7 @@ LIB_NCCL = -L/home/ali/software/hpc-sdk/24.5/Linux_x86_64/24.5/comm_libs/nccl/li
 OBJ_DIR_NCCL = $(PREFIX_NCCL)/obj
 OBJ_NCCL = $(OBJ_DIR_NCCL)/nccl_matrix_mult.o
 
-all: mpi_matrix_mult hello
+all: mpi_matrix_mult #hello
 
 # Compile straight C++ files
 #$(OBJ_DIR)/%.o : $(PREFIX)/%.cu
