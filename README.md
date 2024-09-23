@@ -36,3 +36,7 @@ If running on DGXs, you'll want to use the [Nvidia HPC-SDK](https://developer.nv
 2. [LLNL's amazing MPI Documentation](https://hpc-tutorials.llnl.gov/mpi)
 
 3. [SLURM MPI Guide](https://slurm.schedmd.com/mpi_guide.html)
+
+4. [NCCL Tests](https://github.com/NVIDIA/nccl-tests)
+
+5. [Open-MPI : Tuning for Infinband](https://www-lb.open-mpi.org/faq/?category=openfabrics#run-ucx)
