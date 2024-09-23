@@ -25,6 +25,8 @@ make
 salloc --ntasks=2 --partition=dgxq --cpus-per-task=2 --gres=gpu --nodes=2
 time mpiexec -np 2 mpi_matrix_mult --option mpi_cpu --size 15 --verbose true
 ```
+
+If running on DGXs, you'll want to use the [Nvidia HPC-SDK](https://developer.nvidia.com/hpc-sdk).  It provides module files and a comprensive set of necessary software.
 ### 
 
 

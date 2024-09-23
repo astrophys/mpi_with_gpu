@@ -14,3 +14,4 @@ mpi_matrix_mult
 src/nccl/obj/
 nccl_matrix_mult
 hello
+mpi_matrix_mult_for_container
